@@ -1,9 +1,11 @@
 package com.ridait.springsecurity.config;
 
+import com.ridait.springsecurity.security.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -20,10 +22,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return NoOpPasswordEncoder.getInstance();
     }
 
+    /**
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         /**
-        ----------- In Memory UserDetails -------------
+        ----------- In Memory UserDetailsManager -------------
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         UserDetails ridait = User.withUsername("ridait")
                 .password("123456")
@@ -36,10 +39,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         manager.createUser(ridait);
         manager.createUser(admin);
         return manager;
-         **/
+
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         return manager;
     }
+     **/
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        JpaUserDetailsService service = new JpaUserDetailsService();
+        return service;
+    }
+
 
 
     @Override

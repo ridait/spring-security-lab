@@ -1,5 +1,6 @@
 package com.ridait.springsecurity.security;
 
+import com.ridait.springsecurity.entities.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,31 +10,25 @@ import static java.util.Arrays.asList;
 
 public class User implements UserDetails {
 
-    private String username;
-    private String password;
+    private UserEntity userEntity;
 
-
-    public User(String  username, String password){
-        this.username = username;
-        this.password = password;
+    public User(UserEntity userEntity){
+        this.userEntity = userEntity;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return asList(
-                () -> "USER",
-                ()-> "ADMIN"
-        );
+        return asList(()-> userEntity.getAuthority());
     }
 
     @Override
     public String getPassword() {
-        return this.password;
+        return this.userEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.userEntity.getUsername();
     }
 
     @Override
