@@ -23,19 +23,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsManager userDetailsManager(){
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        UserDetails user = User.withUsername("ridait")
+        UserDetails ridait = User.withUsername("ridait")
                 .password("123456")
-                .authorities("ADMIN","USER")
+                .authorities("USER")
                 .build();
-        manager.createUser(user);
+        UserDetails admin = User.withUsername("admin")
+                .password("nimda")
+                .authorities("ADMIN")
+                .build();
+        manager.createUser(ridait);
+        manager.createUser(admin);
         return manager;
     }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin();
-        http.authorizeRequests().antMatchers("/secret").authenticated();
-        http.authorizeRequests().anyRequest().permitAll();
+        http.formLogin()
+                .defaultSuccessUrl("/secret");
+        http.authorizeRequests().mvcMatchers("/admin").access("hasAuthority('ADMIN')");
+        http.authorizeRequests().mvcMatchers("/user").access("hasAuthority('USER')");
+        http.authorizeRequests().mvcMatchers("/main").permitAll();
+        http.authorizeRequests().anyRequest().authenticated();
     }
 }
